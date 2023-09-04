@@ -6,41 +6,79 @@
   --gris: #4b4b4d;
   --purpura-strong: #6c52cb;
   --purpura-soft: #b453cb;
-  --purple-light-1: #FBFAFB;
-  --purple-light-2: #EEEAF2;
-  --purple-medium-1: #AA83C8;
-  --purple-medium-2: #8B48BF;
-  --purple-medium-3: #5C218A;
-  --purple-dark-1: #3E0F64;
-  --purple-dark-2: #2A0646;
 
-  --yellow: #EECC75;
-  --green: #CAD297;
-  --aqua: #B7EAC5;
-  --lightBlue: #A2EEE5;
-  --darkBlue: #8EA2EA;
-  --red: #F09D9D;
+  --purple-light-1: #fbfafb;
+  --purple-light-2: #eeeaf2;
+  --purple-medium-1: #aa83c8;
+  --purple-medium-2: #8b48bf;
+  --purple-medium-3: #5c218a;
+  --purple-dark-1: #3e0f64;
+  --purple-dark-2: #2a0646;
 
+  --yellow: #eecc75;
+  --green: #cad297;
+  --aqua: #b7eac5;
+  --lightBlue: #a2eee5;
+  --darkBlue: #8ea2ea;
+  --red: #f09d9d;
 }
-#id28 { --idColor: var(--yellow); }
-#id12 { --idColor: var(--red); }
-#id16 { --idColor: var(--green); }
-#id35 { --idColor: var(--lightBlue); }
-#id80 { --idColor: var(--darkBlue); }
-#id99 { --idColor: var(--purple-dark-1); }
-#id18 { --idColor: var(--purple-medium-1); }
-#id10751 { --idColor: var(--yellow); }
-#id14 { --idColor: var(--red); }
-#id36 { --idColor: var(--green); }
-#id27 { --idColor: var(--lightBlue); }
-#id10402 { --idColor: var(--darkBlue); }
-#id9648 { --idColor: var(--purple-dark-1); }
-#id10749 { --idColor: var(--purple-medium-1); }
-#id878 { --idColor: var(--yellow); }
-#id10770 { --idColor: var(--red); }
-#id53 { --idColor: var(--green); }
-#id10752 { --idColor: var(--lightBlue); }
-#id37 { --idColor: var(--darkBlue); }
+#id28 {
+  --idColor: var(--yellow);
+}
+#id12 {
+  --idColor: var(--red);
+}
+#id16 {
+  --idColor: var(--green);
+}
+#id35 {
+  --idColor: var(--lightBlue);
+}
+#id80 {
+  --idColor: var(--darkBlue);
+}
+#id99 {
+  --idColor: var(--purple-dark-1);
+}
+#id18 {
+  --idColor: var(--purple-medium-1);
+}
+#id10751 {
+  --idColor: var(--yellow);
+}
+#id14 {
+  --idColor: var(--red);
+}
+#id36 {
+  --idColor: var(--green);
+}
+#id27 {
+  --idColor: var(--lightBlue);
+}
+#id10402 {
+  --idColor: var(--darkBlue);
+}
+#id9648 {
+  --idColor: var(--purple-dark-1);
+}
+#id10749 {
+  --idColor: var(--purple-medium-1);
+}
+#id878 {
+  --idColor: var(--yellow);
+}
+#id10770 {
+  --idColor: var(--red);
+}
+#id53 {
+  --idColor: var(--green);
+}
+#id10752 {
+  --idColor: var(--lightBlue);
+}
+#id37 {
+  --idColor: var(--darkBlue);
+}
 
 * {
   box-sizing: border-box;
@@ -50,6 +88,7 @@ body {
   margin: 0;
   display: grid;
   width: 100%;
+  height: 100vh;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: auto;
   grid-template-areas:
@@ -88,10 +127,34 @@ main {
   width: auto;
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 main section h3 {
   color: var(--blanco-soft);
   margin-left: 20px;
+}
+
+section .cont {
+  flex-direction: row;
+  justify-content: space-between;
+  display: flex;
+}
+.trending-preview-more {
+  background: rgb(110, 82, 202);
+  background: linear-gradient(
+    180deg,
+    rgba(110, 82, 202, 1) 0%,
+    rgba(182, 83, 203, 1) 100%
+  );
+  width: 80px;
+  height: 40px;
+  text-align: center;
+  color: var(--blanco-strong);
+  font-weight: 500;
+  border-radius: 14px;
+  margin: auto 20px;
+  font-size: 16px;
+  border: none;
 }
 main .header-title {
   display: flex;
@@ -127,6 +190,16 @@ img {
   overflow-x: scroll;
   gap: 20px;
 }
+.trending-preview--movie-list::-webkit-scrollbar {
+  background-color: var(--purpura-soft);
+  height: 10px;
+  border-radius: 8px;
+}
+.trending-preview--movie-list::-webkit-scrollbar-thumb {
+  background-color: var(--anil);
+  border-radius: 8px;
+}
+
 .categories-preview {
   width: 100%;
 }
@@ -136,6 +209,7 @@ img {
   flex-wrap: wrap;
   justify-content: center;
   flex-direction: row;
+  padding: 20px;
 }
 
 .category-title {
@@ -145,10 +219,23 @@ img {
   text-overflow: ellipsis;
 }
 .category-title:before {
-  content: '••••';
+  content: "••••";
   color: transparent;
   /* TODO: cambiar color por ID de la categoría */
   background-color: var(--idColor);
   border-radius: 8px;
   margin-right: 8px;
+}
+@media (max-width: 1024px) {
+  aside h2 {
+    font-size: 1rem;
+  }
+}
+@media (max-width: 768px) {
+  body {
+    display: block;
+  }
+  aside {
+    display: none;
+  }
 }

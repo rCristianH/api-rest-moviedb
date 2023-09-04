@@ -1,50 +1,33 @@
 /* //@ts-check */
+const api = axios.create({
+  baseURL: URL_API,
+  headers: {
+    accept: "application/json",
+    Authorization: `Bearer ${TOKEN}`,
+  },
+});
 
 async function getTrendMovieTop() {
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${TOKEN}`,
-    },
-  };
-  const res = await fetch(`${URL_API}/trending/movie/day`, options);
-  const data = await res.json();
+  const { data } = await api("/trending/movie/day");
   const movies = data.results;
+  let element = ``;
   movies.forEach((movie) => {
-    const trendPrewMoviesCont = document.querySelector(
-      ".trending-preview--movie-list"
-    );
-    const movieContainer = document.createElement("div");
-    movieContainer.classList.add("movie-container");
-
-    const movieImg = document.createElement("img");
-    movieImg.classList.add("movie-img");
-    movieImg.setAttribute("src", `${URL_BASE_IMAGE}${movie.poster_path}`);
-    movieContainer.appendChild(movieImg);
-    trendPrewMoviesCont.appendChild(movieContainer);
+    element += `
+    <div class="movie-container">
+      <img class="movie-img" src="${URL_BASE_IMAGE}${movie.poster_path}">
+    </div>`;
   });
+  $trendPrewMoviesCont.html(element);
 }
 async function getCategPrew() {
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${TOKEN}`,
-    },
-  };
-  const res = await fetch(`${URL_API}/genre/movie/list`, options);
-  const data = await res.json();
+  const { data } = await api("/genre/movie/list");
   const categories = data.genres;
-  const categoriesPrew = document.querySelector(".categories-preview--list");
-  let element = ``
+  let element = ``;
   categories.forEach((category) => {
-  element += `<div class="category-container">
+    element += `
+      <div class="category-container">
     <h3 id="id${category.id}" class="category-title">${category.name}</h3>
-  </div>`
+  </div>`;
   });
-  categoriesPrew.innerHTML = element
+  $categoriesPrew.html(element);
 }
-
-getTrendMovieTop();
-getCategPrew()

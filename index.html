@@ -18,22 +18,32 @@
     <h2>Download</h2>
   </aside>
   <main>
-    <section class="header-title"><input type="text" placeholder="Vanguard"></section>
+    <section class="header-title">
+      <input type="text" placeholder="Vanguard">
+    </section>
     <section class="trending-preview">
-      <h3>Trending Day</h3>
+      <div class="cont">
+        <h3 class="title">Trending Day</h3> <button class="trending-preview-more">Ver mas</button>
+      </div>
       <article class="trending-preview--movie-list">
 
 
       </article>
     </section>
     <section class="categories-preview">
-      <h3>Categories</h3>
+      <div class="cont">
+        <h3 class="title">Categories</h3>
+      </div>
       <article class="categories-preview--list"></article>
     </section>
   </main>
 
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="./src/nodes.js"></script>
   <script src="./src/top.js"></script>
   <script src="./src/main.js"></script>
+  <script src="./src/navigation.js"></script>
 </body>
 
 </html>
