@@ -201,6 +201,9 @@ main .header-title input {
   border-radius: 16px 0 0 16px;
   padding-left: 20px;
 }
+main .header-title input:focus-visible {
+  color: var(--blanco-strong);
+}
 main .trending-preview {
   display: flex;
   flex-direction: column;
@@ -267,15 +270,59 @@ img {
   gap: 20px;
   justify-content: center;
 }
-.movie-detail {
-  width: 100%;
-  background-color: var(--red);
-}
+
 .movie-container img {
   height: 250px;
   border-radius: 14px;
 }
+.movie-detail {
+  display: grid;
+  height: 90vh;
+  grid-template-areas:
+    "movie details"
+    "similar similar";
+  grid-template-columns: repeat(2, 1fr);
 
+}
+.img-container {
+  grid-area: movie;
+  height: 45vh;
+  overflow: hidden;
+  border-radius: 14px;
+}
+.img-container .movie-img{
+  width: 100%;
+  height: auto;
+}
+.movie-detail .container-movie--details {
+  grid-area: details;
+  height: 45vh;
+  color: var(--blanco-strong);
+  padding: 0 20px ;
+  overflow: hidden;
+}
+.container-movie--details .categories-list{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap
+}
+.movie-detail .relatedMovies-container {
+  grid-area: similar;
+  height: 45vh;
+
+}
+.relatedMovies-container h2 {
+  height: 5vh;
+  color: var(--blanco-strong);
+  margin: 5px;
+}
+
+.relatedMovies-scrollContainer {
+    display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 20px;
+}
 @media (max-width: 1024px) {
   aside h2 {
     font-size: 1rem;

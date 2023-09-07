@@ -6,6 +6,26 @@ const api = axios.create({
     Authorization: `Bearer ${TOKEN}`,
   },
 });
+/* utils */
+function createMovies(movies) {
+  const $tempContainer = $("<div>");
+
+  movies.forEach((movie) => {
+    if (movie.poster_path !== null) {
+      const $divElement = $("<div>").addClass("movie-container");
+
+      const $imgElement = $("<img>")
+        .attr("src", URL_BASE_IMAGE + movie.poster_path)
+        .addClass("movie-img");
+      $divElement.append($imgElement);
+      $tempContainer.append($divElement);
+    }
+  });
+  return $tempContainer
+}
+$navBack.on('click', function () {
+  window.history.back();
+});
 
 async function getTrendMovieTop() {
   const { data } = await api("trending/movie/day");
@@ -54,19 +74,29 @@ async function getMoviesByCate(i, j) {
   const movies = data.results;
   console.log(movies);
   $genericListName.text(j);
-  const $tempContainer = $("<div>");
 
-  movies.forEach((movie) => {
-    if (movie.poster_path !== null) {
-      const $divElement = $("<div>").addClass("movie-container");
+  let element = createMovies(movies)
 
-      const $imgElement = $("<img>")
-        .attr("src", URL_BASE_IMAGE + movie.poster_path)
-        .addClass("movie-img");
-      $divElement.append($imgElement);
-      $tempContainer.append($divElement);
-    }
-  });
-  $genericListCont.html($tempContainer.html());
+  $genericListCont.html(element.html()); 
+  document.querySelector("main").scrollTop = 0;
+}
+async function getQuerySearch(i, j){
+  const { data } = await api(`search/movie?query=${i}`);
+  const movies = data.results;
+  console.log(movies)
+  $genericListName.text(j);
+  let element = createMovies(movies)
+  $genericListCont.html(element.html()); 
+  document.querySelector("main").scrollTop = 0;
+}
+async function getTrends(){
+  const { data } = await api("trending/movie/day");
+  const movies = data.results;
+  
+  $genericListName.text(`Trendings day`);
+
+  let element = createMovies(movies)
+
+  $genericListCont.html(element.html()); 
   document.querySelector("main").scrollTop = 0;
 }

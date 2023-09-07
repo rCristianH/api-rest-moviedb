@@ -1,7 +1,9 @@
 $searchBtn.click(function () {
-  location.hash = "#search=";
+  location.hash = `#search=${$inputSearch.val()}`
 });
-$trenMore.click(function () {});
+$trenMore.click(function () {
+  trendsPage()
+});
 $navHome.click(function () {
   location.hash = "#home=";
 });
@@ -45,11 +47,11 @@ function getID(i) {
     console.log("404 No se encontro id.");
   }
 }
-function getName(i) {
-  const lastIndex = i.lastIndexOf("-");
+function getName(i, j, k = true) {
+  const lastIndex = i.lastIndexOf(j);
   let lastName = lastIndex !== -1 ? i.slice(lastIndex + 1) : null;
 
-  if (lastName) {
+  if (k == true) {
     lastName = lastName.replace(/%20/g, ' ');
   }
 
@@ -61,7 +63,7 @@ function categoriesPage() {
   $categoriesSec.hide();
   $genericSec.show();
   $movieDetSec.hide();
-  getMoviesByCate(getID(location.hash),getName(location.hash))
+  getMoviesByCate(getID(location.hash),getName(location.hash, "-"))
 }
 
 function movieDetailsPage() {
@@ -78,12 +80,14 @@ function searchPage() {
   $categoriesSec.hide();
   $genericSec.show();
   $movieDetSec.hide();
+  getQuerySearch(getName(location.hash, "=", false), getName(location.hash, "="))
 }
 
 function trendsPage() {
   console.log("TRENDS!!");
-  $trendingSec.show();
+  $trendingSec.hide();
   $categoriesSec.hide();
-  $genericSec.hide();
+  $genericSec.show();
   $movieDetSec.hide();
+  getTrends()
 }
