@@ -282,7 +282,6 @@ img {
     "movie details"
     "similar similar";
   grid-template-columns: repeat(2, 1fr);
-
 }
 .img-container {
   grid-area: movie;
@@ -290,7 +289,7 @@ img {
   overflow: hidden;
   border-radius: 14px;
 }
-.img-container .movie-img{
+.img-container .movie-img {
   width: 100%;
   height: auto;
 }
@@ -298,18 +297,18 @@ img {
   grid-area: details;
   height: 45vh;
   color: var(--blanco-strong);
-  padding: 0 20px ;
+  padding: 0 20px;
   overflow: hidden;
 }
-.container-movie--details .categories-list{
+.container-movie--details .categories-list {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap
+  flex-wrap: wrap;
 }
 .movie-detail .relatedMovies-container {
   grid-area: similar;
   height: 45vh;
-
+  width: 100%;
 }
 .relatedMovies-container h2 {
   height: 5vh;
@@ -318,10 +317,21 @@ img {
 }
 
 .relatedMovies-scrollContainer {
-    display: flex;
-  justify-content: center;
+  display: flex;
   flex-direction: row;
   gap: 20px;
+  overflow-x: scroll;
+}
+
+.relatedMovies-scrollContainer::-webkit-scrollbar {
+  background-color: var(--purpura-soft);
+  height: 10px;
+  border-radius: 8px;
+}
+.relatedMovies-scrollContainer::-webkit-scrollbar-thumb {
+  background-color: var(--anil);
+  border-radius: 8px;
+  border: 1px solid var(--blanco-soft);
 }
 @media (max-width: 1024px) {
   aside h2 {

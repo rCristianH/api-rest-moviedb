@@ -17,32 +17,44 @@ function createMovies(movies) {
       const $imgElement = $("<img>")
         .attr("src", URL_BASE_IMAGE + movie.poster_path)
         .addClass("movie-img");
+      $imgElement.click(function () {
+        console.log(location.hash = `#movie=${movie.id}`)
+      });
       $divElement.append($imgElement);
       $tempContainer.append($divElement);
     }
   });
-  return $tempContainer
+  return $tempContainer;
 }
-$navBack.on('click', function () {
+$navBack.on("click", function () {
   window.history.back();
 });
 
 async function getTrendMovieTop() {
   const { data } = await api("trending/movie/day");
   const movies = data.results;
-  let element = ``;
+
   movies.forEach((movie) => {
-    element += `
-    <div class="movie-container">
-      <img class="movie-img" src="${URL_BASE_IMAGE}${movie.poster_path}">
-    </div>`;
+    const movieContainer = document.createElement("div");
+    movieContainer.className = "movie-container";
+
+    const movieImage = document.createElement("img");
+    movieImage.className = "movie-img";
+    movieImage.src = `${URL_BASE_IMAGE}${movie.poster_path}`;
+
+    movieContainer.appendChild(movieImage);
+
+    movieImage.addEventListener("click", function () {
+      location.hash = `#movie=${movie.id}`;
+      console.log(`Se hizo clic en la imagen de la película:`);
+    });
+    $trendPrewMoviesCont.append(movieContainer);
   });
-  $trendPrewMoviesCont.html(element);
 }
 async function getCategPrew() {
   const { data } = await api("genre/movie/list");
   const categories = data.genres;
-  $categoriesPrew.html("")
+  $categoriesPrew.html("");
   categories.forEach((category) => {
     const divElement = document.createElement("div");
     divElement.className = "category-container";
@@ -58,16 +70,13 @@ async function getCategPrew() {
     };
     $categoriesPrew.append(divElement);
   });
-
-
- 
 }
 async function getMoviesByCate(i, j) {
-  try{
+  try {
     await api(`movie/${i}/similar`);
-  }catch(e){
-    console.log(e.response.status)
-    location.hash = "#home="
+  } catch (e) {
+    console.log(e.response.status);
+    location.hash = "#home=";
     return;
   }
   const { data } = await api(`movie/${i}/similar`);
@@ -75,28 +84,85 @@ async function getMoviesByCate(i, j) {
   console.log(movies);
   $genericListName.text(j);
 
-  let element = createMovies(movies)
+  let element = createMovies(movies);
 
-  $genericListCont.html(element.html()); 
+  $genericListCont.html(element.html());
   document.querySelector("main").scrollTop = 0;
 }
-async function getQuerySearch(i, j){
+async function getQuerySearch(i, j) {
   const { data } = await api(`search/movie?query=${i}`);
   const movies = data.results;
-  console.log(movies)
+  console.log(movies);
   $genericListName.text(j);
-  let element = createMovies(movies)
-  $genericListCont.html(element.html()); 
+  let element = createMovies(movies);
+  $genericListCont.html(element.html());
   document.querySelector("main").scrollTop = 0;
 }
-async function getTrends(){
+async function getTrends() {
   const { data } = await api("trending/movie/day");
   const movies = data.results;
-  
+
   $genericListName.text(`Trendings day`);
 
-  let element = createMovies(movies)
+  let element = createMovies(movies);
 
-  $genericListCont.html(element.html()); 
+  $genericListCont.html(element.html());
   document.querySelector("main").scrollTop = 0;
+}
+async function getMovieById(i) {
+  console.log(i);
+  const { data } = await api(`movie/${i}`);
+  const movies = data;
+  console.log(movies);
+  getSimilar(i);
+  $imgDet.attr("src", `${URL_BASE_IMAGE}${movies.poster_path}`);
+  $movDetCont.html("");
+  let $container = $("<div>").addClass("container-movie--details");
+  let $title = $("<h1>").addClass("movieDetail-title").text(movies.title);
+  let $score = $("<span>")
+    .addClass("movieDetail-score")
+    .text(`⭐${movies.vote_average.toFixed(1)}`);
+  let $description = $("<p>")
+    .addClass("movieDetail-description")
+    .text(movies.overview);
+  let $categoriesList = $("<article>").addClass("categories-list");
+
+  movies.genres.forEach(function (category) {
+    let $categoryContainer = $("<div>").addClass("category-container");
+    let $categoryTitle = $("<h3>", {
+      id: "id" + category.id,
+      class: "category-title",
+      text: category.name,
+    });
+    $categoryTitle.on("click", function () {
+      location.hash = `#category=${category.id}-${category.name}`;
+    });
+    $categoryContainer.append($categoryTitle);
+    $categoriesList.append($categoryContainer);
+  });
+  $container.append($title, $score, $description, $categoriesList);
+  $movDetCont.append($container);
+}
+async function getSimilar(i) {
+  const { data } = await api(`movie/${i}/similar`);
+  const movies = data.results;
+  console.log(movies);
+  $movDetSim.html("");
+  movies.forEach((movie) => {
+    if (movie.poster_path !== null) {
+      const movieContainer = document.createElement("div");
+      movieContainer.className = "movie-container";
+
+      const movieImage = document.createElement("img");
+      movieImage.className = "movie-img";
+      movieImage.src = `${URL_BASE_IMAGE}${movie.poster_path}`;
+
+      movieContainer.appendChild(movieImage);
+
+      movieImage.addEventListener("click", function () {
+        location.hash = `#movie=${movie.id}`;
+      });
+      $movDetSim.append(movieContainer);
+    }
+  });
 }

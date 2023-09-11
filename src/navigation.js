@@ -38,7 +38,7 @@ function homePage() {
   getCategPrew();
 }
 function getID(i) {
-  const match = i.match(/=(\d+)-/);
+  const match = i.match(/=(\d+)-?/);
 
   if (match) {
     const number = match[1];
@@ -72,6 +72,7 @@ function movieDetailsPage() {
   $categoriesSec.hide();
   $genericSec.hide();
   $movieDetSec.show();
+  getMovieById(getID(location.hash))
 }
 
 function searchPage() {
