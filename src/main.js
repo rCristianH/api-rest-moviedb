@@ -1,4 +1,5 @@
 //@ts-check
+/* // @ts-ignore */
 const api = axios.create({
   baseURL: URL_API,
   headers: {
@@ -19,8 +20,12 @@ let calback = (entries) => {
   });
 };
 const lazyLoader = new IntersectionObserver(calback, options);
-function createMoviesAlt(i, j) {
-  i.html("");
+function createMoviesAlt(i, j, k = true) {
+  let lazyLoad = true;
+  if(k){
+    i.html("");
+  }
+  
   j.forEach((movie) => {
     if (movie.poster_path !== null) {
       const movieContainer = document.createElement("div");
@@ -28,8 +33,13 @@ function createMoviesAlt(i, j) {
 
       const movieImage = document.createElement("img");
       movieImage.className = "movie-img";
-      movieImage.src = `${URL_BASE_IMAGE}${movie.poster_path}`;
-
+      movieImage.setAttribute(
+        lazyLoad ? "data-img" : "src",
+        `${URL_BASE_IMAGE}${movie.poster_path}`
+      );
+      if (lazyLoad) {
+        lazyLoader.observe(movieImage);
+      }
       movieContainer.appendChild(movieImage);
 
       movieImage.addEventListener("click", function () {
@@ -120,8 +130,32 @@ async function getTrends() {
 
   $genericListName.text(`Trendings day`);
   createMoviesAlt($genericListCont, movies);
+
+  const btnLoad = document.createElement("button");
+  btnLoad.className = "trending-preview-more";
+  btnLoad.textContent = "Load more ...";
+  btnLoad.addEventListener("click", getPag);
+  $genericSec.append(btnLoad);
+
   document.querySelector("main").scrollTop = 0;
 }
+function* numeros() {
+  let i = 2
+  while (true) { 
+    yield i; 
+    i++
+  }
+}
+const generador = numeros()
+const getPag = async () => {
+  const { data } = await api("trending/movie/day", {
+    params: {
+      page: generador.next().value,
+    },
+  });
+  const movies = data.results;
+  createMoviesAlt($genericListCont, movies, false);
+};
 async function getMovieById(i) {
   console.log(i);
   const { data } = await api(`movie/${i}`);
