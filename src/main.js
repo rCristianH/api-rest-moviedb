@@ -1,4 +1,4 @@
-/* //@ts-check */
+//@ts-check
 const api = axios.create({
   baseURL: URL_API,
   headers: {
@@ -10,33 +10,34 @@ const api = axios.create({
 let options = {
   root: document.querySelector("body"),
 };
-let calback  = (entries) => {
+let calback = (entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
-      const url = entry.target.getAttribute('data-img')
-      entry.target.setAttribute('src', url);
+      const url = entry.target.getAttribute("data-img");
+      entry.target.setAttribute("src", url);
     }
   });
-}
-const lazyLoader = new IntersectionObserver(calback, options)
-function createMovies(movies) {
-  const $tempContainer = $("<div>");
-
-  movies.forEach((movie) => {
+};
+const lazyLoader = new IntersectionObserver(calback, options);
+function createMoviesAlt(i, j) {
+  i.html("");
+  j.forEach((movie) => {
     if (movie.poster_path !== null) {
-      const $divElement = $("<div>").addClass("movie-container");
+      const movieContainer = document.createElement("div");
+      movieContainer.className = "movie-container";
 
-      const $imgElement = $("<img>")
-        .attr("data-img", URL_BASE_IMAGE + movie.poster_path)
-        .addClass("movie-img");
-      $imgElement.click(function () {
-        console.log((location.hash = `#movie=${movie.id}`));
+      const movieImage = document.createElement("img");
+      movieImage.className = "movie-img";
+      movieImage.src = `${URL_BASE_IMAGE}${movie.poster_path}`;
+
+      movieContainer.appendChild(movieImage);
+
+      movieImage.addEventListener("click", function () {
+        location.hash = `#movie=${movie.id}`;
       });
-      $divElement.append($imgElement);
-      $tempContainer.append($divElement);
+      i.append(movieContainer);
     }
   });
-  return $tempContainer;
 }
 
 $navBack.on("click", function () {
@@ -44,11 +45,10 @@ $navBack.on("click", function () {
 });
 
 async function getTrendMovieTop() {
-  let lazyLoad = true
+  let lazyLoad = true;
   const { data } = await api("trending/movie/day");
   const movies = data.results;
-  $trendPrewMoviesCont.html("");
-  movies.forEach((movie) => {
+  /* movies.forEach((movie) => {
     const movieContainer = document.createElement("div");
     movieContainer.className = "movie-container";
 
@@ -68,7 +68,8 @@ async function getTrendMovieTop() {
       console.log(`Se hizo clic en la imagen de la película:`);
     });
     $trendPrewMoviesCont.append(movieContainer);
-  });
+  }); */
+  createMoviesAlt($trendPrewMoviesCont, movies);
 }
 async function getCategPrew() {
   const { data } = await api("genre/movie/list?include_adult=true");
@@ -102,10 +103,7 @@ async function getMoviesByCate(i, j) {
   const movies = data.results;
   console.log(movies);
   $genericListName.text(j);
-
-  let element = createMovies(movies);
-
-  $genericListCont.html(element.html());
+  createMoviesAlt($genericListCont, movies);
   document.querySelector("main").scrollTop = 0;
 }
 async function getQuerySearch(i, j) {
@@ -113,8 +111,7 @@ async function getQuerySearch(i, j) {
   const movies = data.results;
   console.log(movies);
   $genericListName.text(j);
-  let element = createMovies(movies);
-  $genericListCont.html(element.html());
+  createMoviesAlt($genericListCont, movies);
   document.querySelector("main").scrollTop = 0;
 }
 async function getTrends() {
@@ -122,10 +119,7 @@ async function getTrends() {
   const movies = data.results;
 
   $genericListName.text(`Trendings day`);
-
-  let element = createMovies(movies);
-
-  $genericListCont.html(element.html());
+  createMoviesAlt($genericListCont, movies);
   document.querySelector("main").scrollTop = 0;
 }
 async function getMovieById(i) {
@@ -166,22 +160,5 @@ async function getSimilar(i) {
   const { data } = await api(`movie/${i}/similar`);
   const movies = data.results;
   console.log(movies);
-  $movDetSim.html("");
-  movies.forEach((movie) => {
-    if (movie.poster_path !== null) {
-      const movieContainer = document.createElement("div");
-      movieContainer.className = "movie-container";
-
-      const movieImage = document.createElement("img");
-      movieImage.className = "movie-img";
-      movieImage.src = `${URL_BASE_IMAGE}${movie.poster_path}`;
-
-      movieContainer.appendChild(movieImage);
-
-      movieImage.addEventListener("click", function () {
-        location.hash = `#movie=${movie.id}`;
-      });
-      $movDetSim.append(movieContainer);
-    }
-  });
+  createMoviesAlt($movDetSim, movies);
 }
