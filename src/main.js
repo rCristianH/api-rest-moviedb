@@ -7,6 +7,18 @@ const api = axios.create({
   },
 });
 /* utils */
+let options = {
+  root: document.querySelector("body"),
+};
+let calback  = (entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      const url = entry.target.getAttribute('data-img')
+      entry.target.setAttribute('src', url);
+    }
+  });
+}
+const lazyLoader = new IntersectionObserver(calback, options)
 function createMovies(movies) {
   const $tempContainer = $("<div>");
 
@@ -15,10 +27,10 @@ function createMovies(movies) {
       const $divElement = $("<div>").addClass("movie-container");
 
       const $imgElement = $("<img>")
-        .attr("src", URL_BASE_IMAGE + movie.poster_path)
+        .attr("data-img", URL_BASE_IMAGE + movie.poster_path)
         .addClass("movie-img");
       $imgElement.click(function () {
-        console.log(location.hash = `#movie=${movie.id}`)
+        console.log((location.hash = `#movie=${movie.id}`));
       });
       $divElement.append($imgElement);
       $tempContainer.append($divElement);
@@ -26,22 +38,29 @@ function createMovies(movies) {
   });
   return $tempContainer;
 }
+
 $navBack.on("click", function () {
   window.history.back();
 });
 
 async function getTrendMovieTop() {
+  let lazyLoad = true
   const { data } = await api("trending/movie/day");
   const movies = data.results;
-
+  $trendPrewMoviesCont.html("");
   movies.forEach((movie) => {
     const movieContainer = document.createElement("div");
     movieContainer.className = "movie-container";
 
     const movieImage = document.createElement("img");
     movieImage.className = "movie-img";
-    movieImage.src = `${URL_BASE_IMAGE}${movie.poster_path}`;
-
+    movieImage.setAttribute(
+      lazyLoad ? "data-img" : "src",
+      `${URL_BASE_IMAGE}${movie.poster_path}`
+    );
+    if (lazyLoad) {
+      lazyLoader.observe(movieImagegom);
+    }
     movieContainer.appendChild(movieImage);
 
     movieImage.addEventListener("click", function () {
@@ -52,7 +71,7 @@ async function getTrendMovieTop() {
   });
 }
 async function getCategPrew() {
-  const { data } = await api("genre/movie/list");
+  const { data } = await api("genre/movie/list?include_adult=true");
   const categories = data.genres;
   $categoriesPrew.html("");
   categories.forEach((category) => {

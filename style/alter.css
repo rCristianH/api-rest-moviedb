@@ -223,6 +223,12 @@ img {
   overflow-x: scroll;
   gap: 20px;
 }
+.movie-container-load .movie-img-load{
+  height: 250px;
+  background-color: var(--gris);
+  aspect-ratio: 2/3;
+  animation: loading-skeleton infinite 1s;
+}
 .trending-preview--movie-list::-webkit-scrollbar {
   background-color: var(--purpura-soft);
   height: 10px;
@@ -251,6 +257,13 @@ img {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.category-container-load{
+  background-color: var(--gris);
+  width: 100px;
+  height: 25px;
+  margin: 5px;
+  animation: loading-skeleton infinite 1s;
 }
 .category-title:before {
   content: "••••";
@@ -332,6 +345,14 @@ img {
   background-color: var(--anil);
   border-radius: 8px;
   border: 1px solid var(--blanco-soft);
+}
+@keyframes loading-skeleton {
+ 0%, 100%{
+  opacity: 100%
+ }
+ 50%{
+  opacity: 0%;
+ }
 }
 @media (max-width: 1024px) {
   aside h2 {
