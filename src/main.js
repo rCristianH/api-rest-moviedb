@@ -59,7 +59,7 @@ async function getTrendMovieTop() {
       `${URL_BASE_IMAGE}${movie.poster_path}`
     );
     if (lazyLoad) {
-      lazyLoader.observe(movieImagegom);
+      lazyLoader.observe(movieImage);
     }
     movieContainer.appendChild(movieImage);
 
