@@ -15,6 +15,14 @@ idioma.addEventListener("change", function () {
     location.reload()
   }
 });
+let TOKEN
+if(localStorage.getItem("TOKEN")){
+  TOKEN = localStorage.getItem("TOKEN")
+}else{
+  TOKEN = prompt("introduzca su token")
+  localStorage.setItem("TOKEN", TOKEN)
+}
+
 const api = axios.create({
   baseURL: URL_API,
   params: { include_adult: "true", language: lang },
