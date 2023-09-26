@@ -22,6 +22,7 @@ function* numeros() {
 const generador = numeros();
 // Comprueba si se debe activar el scroll infinito
 const checkDisplay = (apiUrl = false) => {
+  console.log("cr")
   let prevScrollTop = 0;
     // Comprueba si el elemento con clase 'genericSec' tiene display 'block'
   if ($genericSec.css("display") === "block" && typeof apiUrl == "string") {
@@ -48,15 +49,13 @@ const infiniteScroll = async (apiUrl = "string") => {
   const scrollHeight = selectMain?.scrollHeight;
   const clientHeight = document.documentElement.clientHeight;
 
-  const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 20;
-
+  const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 80;
   if (scrollIsBottom) {
     const { data } = await api(apiUrl, {
       params: {
         page: generador.next().value,
       },
     });
-    console.log(data);
     const movies = data.results;
 
     if (data.page > data.total_pages) {
