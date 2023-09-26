@@ -8,8 +8,54 @@ const api = axios.create({
   },
 });
 /* utils */
+function* numeros() {
+  let i = 2;
+  while (true) {
+    yield i;
+    i++;
+  }
+}
+const generador = numeros();
+const checkDisplay = (apiUrl = false) => {
+  console.log(typeof(apiUrl));
+  if ($genericSec.css("display") === "block" && typeof(apiUrl) == "string") {
+    document.querySelector("main")?.addEventListener(
+      "scroll",
+      function () {
+        infiniteScroll(apiUrl);
+      },
+      false
+    );
+  }
+};
+const infiniteScroll = async (apiUrl) => {
+  
+
+  let scrollTop = document.querySelector("main")?.scrollTop;
+  const scrollHeight = document.querySelector("main")?.scrollHeight;
+  const clientHeight = document.documentElement.clientHeight;
+
+  const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 20;
+
+  if (scrollIsBottom) {
+    const { data } = await api(apiUrl, {
+      params: {
+        page: generador.next().value,
+      },
+    });
+    console.log(data);
+    const movies = data.results;
+    
+    if (data.page === data.total_pages) {
+      checkDisplay();
+      return;
+    }
+    console.log(movies);
+    createMoviesAlt($genericListCont, movies, false);
+  }
+};
 let options = {
-  root: document.querySelector("body"),
+  root: document.querySelector("main"),
 };
 let calback = (entries) => {
   entries.forEach((entry) => {
@@ -22,10 +68,10 @@ let calback = (entries) => {
 const lazyLoader = new IntersectionObserver(calback, options);
 function createMoviesAlt(i, j, k = true) {
   let lazyLoad = true;
-  if(k){
+  if (k) {
     i.html("");
   }
-  
+
   j.forEach((movie) => {
     if (movie.poster_path !== null) {
       const movieContainer = document.createElement("div");
@@ -123,7 +169,10 @@ async function getQuerySearch(i, j) {
   $genericListName.text(j);
   createMoviesAlt($genericListCont, movies);
   document.querySelector("main").scrollTop = 0;
+  checkDisplay(`search/movie?query=${i}`);
+  infiniteScroll(`search/movie?query=${i}`);
 }
+
 async function getTrends() {
   const { data } = await api("trending/movie/day");
   const movies = data.results;
@@ -131,31 +180,11 @@ async function getTrends() {
   $genericListName.text(`Trendings day`);
   createMoviesAlt($genericListCont, movies);
 
-  const btnLoad = document.createElement("button");
-  btnLoad.className = "trending-preview-more";
-  btnLoad.textContent = "Load more ...";
-  btnLoad.addEventListener("click", getPag);
-  $genericSec.append(btnLoad);
-
   document.querySelector("main").scrollTop = 0;
+  checkDisplay("trending/movie/day");
+  infiniteScroll("trending/movie/day");
 }
-function* numeros() {
-  let i = 2
-  while (true) { 
-    yield i; 
-    i++
-  }
-}
-const generador = numeros()
-const getPag = async () => {
-  const { data } = await api("trending/movie/day", {
-    params: {
-      page: generador.next().value,
-    },
-  });
-  const movies = data.results;
-  createMoviesAlt($genericListCont, movies, false);
-};
+
 async function getMovieById(i) {
   console.log(i);
   const { data } = await api(`movie/${i}`);

@@ -276,6 +276,7 @@ img {
 /*  */
 .generic {
   width: 100%;
+  height: fit-content;
 }
 .genericList-container {
   display: flex;
@@ -361,7 +362,7 @@ img {
 }
 @media (max-width: 768px) {
   body {
-    display: block;
+    grid-template-columns: 0 repeat(5, 1fr);
   }
   body::-webkit-scrollbar {
     background-color: var(--purpura-soft);
@@ -372,9 +373,6 @@ img {
     background-color: var(--anil);
     border-radius: 8px;
     border: 1px solid var(--blanco-soft);
-  }
-  main {
-    overflow: hidden;
   }
   aside {
     display: none;
