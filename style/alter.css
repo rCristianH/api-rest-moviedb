@@ -185,8 +185,13 @@ nav {
 }
 .nav {
   width: min-content;
+  margin: 0;
 }
-main .header-title {
+.nav-select{
+  margin-top: 50px;
+}
+
+main .header-title div {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -284,7 +289,9 @@ img {
   gap: 20px;
   justify-content: center;
 }
-
+.movie-container{
+  position: relative;
+}
 .movie-container img {
   height: 250px;
   border-radius: 14px;
@@ -306,6 +313,20 @@ img {
 .img-container .movie-img {
   width: 100%;
   height: auto;
+}
+.movie-btn{
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  margin: 0;
+  width: 40px;
+  font-size: 28px;
+}
+.movie-btn::before{
+  content: "♡";
+}
+.movie-btn-liked::before{
+  content: "❤";
 }
 .movie-detail .container-movie--details {
   grid-area: details;

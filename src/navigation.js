@@ -2,7 +2,7 @@ $searchBtn.click(function () {
   location.hash = `#search=${$inputSearch.val()}`
 });
 $trenMore.click(function () {
-  trendsPage()
+  location.hash = "#trends=";
 });
 $navHome.click(function () {
   location.hash = "#home=";
@@ -10,12 +10,14 @@ $navHome.click(function () {
 $navCate.click(function () {
   location.hash = "#category=";
 });
+$navSave.click(function(){
+  location.hash = "#save="
+})
 
 window.addEventListener("DOMContentLoaded", navigator, false);
 window.addEventListener("hashchange", navigator, false);
 
 function navigator() {
-  console.log({ location });
 
   location.hash.startsWith("#trends")
     ? trendsPage()
@@ -25,6 +27,8 @@ function navigator() {
     ? movieDetailsPage()
     : location.hash.startsWith("#category=")
     ? categoriesPage()
+    : location.hash.startsWith("#save=")
+    ? savesPage()
     : homePage();
 }
 
@@ -91,4 +95,12 @@ function trendsPage() {
   $genericSec.show();
   $movieDetSec.hide();
   getTrends()
+}
+function savesPage(){
+  console.log("Saves")
+  $trendingSec.hide();
+  $categoriesSec.hide();
+  $genericSec.show();
+  $movieDetSec.hide();
+  getSaves()
 }

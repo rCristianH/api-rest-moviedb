@@ -15,6 +15,7 @@ const $trenMore = $(".trending-preview-more");
 const $navHome = $(".nav-home");
 const $navCate = $(".nav-cate");
 const $navBack = $(".nav-back");
+const $navSave = $(".nav-save");
 const $genericListName = $(".generic--list-name");
 /* details */
 const $imgDet = $(".img-container .movie-img");

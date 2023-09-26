@@ -1,13 +1,43 @@
-
 /* // @ts-ignore */
 // @ts-ignore
+let lang = localStorage.getItem("lang") ? localStorage.getItem("lang") : navigator.language;
+let idioma = document.getElementById("lang");
+idioma.addEventListener("change", function () {
+  let idiomaChange = idioma.value;
+  if (idiomaChange === "sys") {
+    localStorage.setItem("lang", navigator.language);
+    location.reload()
+  } else if (idiomaChange === "en") {
+    localStorage.setItem("lang", "en-US");
+    location.reload()
+  } else {
+    localStorage.setItem("lang", "es-US")
+    location.reload()
+  }
+});
 const api = axios.create({
   baseURL: URL_API,
+  params: { include_adult: "true", language: lang },
   headers: {
     accept: "application/json",
     Authorization: `Bearer ${TOKEN}`,
   },
 });
+const likedMovie = () => {
+  const item = JSON.parse(localStorage.getItem("liked_movie"));
+  return (movies = item ? item : {});
+};
+const likeMovie = (movie) => {
+  const likedMovies = likedMovie();
+  console.log(likedMovies);
+  if (likedMovies[movie.id]) {
+    likedMovies[movie.id] = undefined;
+  } else {
+    likedMovies[movie.id] = movie;
+  }
+
+  localStorage.setItem("liked_movie", JSON.stringify(likedMovies));
+};
 /* utils */
 // Selecciona el elemento 'main' del documento
 let selectMain = document.querySelector("main");
@@ -22,9 +52,9 @@ function* numeros() {
 const generador = numeros();
 // Comprueba si se debe activar el scroll infinito
 const checkDisplay = (apiUrl = false) => {
-  console.log("cr")
+  console.log("cr");
   let prevScrollTop = 0;
-    // Comprueba si el elemento con clase 'genericSec' tiene display 'block'
+  // Comprueba si el elemento con clase 'genericSec' tiene display 'block'
   if ($genericSec.css("display") === "block" && typeof apiUrl == "string") {
     selectMain?.addEventListener(
       "scroll",
@@ -39,7 +69,7 @@ const checkDisplay = (apiUrl = false) => {
         // Actualiza la posición anterior
         prevScrollTop = currentScrollTop;
       },
-      {passive: false}
+      { passive: false }
     );
   }
 };
@@ -86,7 +116,6 @@ function createMoviesAlt(i, j, k = true) {
   if (k) {
     i.html("");
   }
-
   j.forEach((movie) => {
     if (movie.poster_path !== null) {
       const movieContainer = document.createElement("div");
@@ -98,11 +127,19 @@ function createMoviesAlt(i, j, k = true) {
         lazyLoad ? "data-img" : "src",
         `${URL_BASE_IMAGE}${movie.poster_path}`
       );
+      const movieBtn = document.createElement("button");
+      movieBtn.className = "trending-preview-more movie-btn";
+      likedMovie()[movie.id] && movieBtn.classList.add("movie-btn-liked");
+      movieBtn.addEventListener("click", () => {
+        movieBtn.classList.toggle("movie-btn-liked");
+        likeMovie(movie);
+      });
+
       if (lazyLoad) {
         lazyLoader.observe(movieImage);
       }
       movieContainer.appendChild(movieImage);
-
+      movieContainer.appendChild(movieBtn);
       movieImage.addEventListener("click", function () {
         location.hash = `#movie=${movie.id}`;
       });
@@ -198,7 +235,7 @@ async function getQuerySearch(i, j) {
 async function getTrends() {
   const { data } = await api("trending/movie/day");
   const movies = data.results;
-
+  console.log(movies);
   $genericListName.text(`Trendings day`);
   createMoviesAlt($genericListCont, movies);
 
@@ -248,3 +285,12 @@ async function getSimilar(i) {
   console.log(movies);
   createMoviesAlt($movDetSim, movies);
 }
+
+const getSaves = () => {
+  const movies = Object.values(JSON.parse(localStorage.getItem("liked_movie")));
+  $genericListName.text(`Saves films`);
+  console.log(movies);
+  createMoviesAlt($genericListCont, movies);
+
+  selectMain.scrollTop = 0;
+};
