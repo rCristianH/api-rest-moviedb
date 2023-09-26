@@ -1,5 +1,6 @@
-//@ts-check
+
 /* // @ts-ignore */
+// @ts-ignore
 const api = axios.create({
   baseURL: URL_API,
   headers: {
@@ -8,6 +9,8 @@ const api = axios.create({
   },
 });
 /* utils */
+// Selecciona el elemento 'main' del documento
+let selectMain = document.querySelector("main");
 function* numeros() {
   let i = 2;
   while (true) {
@@ -15,24 +18,34 @@ function* numeros() {
     i++;
   }
 }
+// Genera números comenzando desde 2
 const generador = numeros();
+// Comprueba si se debe activar el scroll infinito
 const checkDisplay = (apiUrl = false) => {
-  console.log(typeof(apiUrl));
-  if ($genericSec.css("display") === "block" && typeof(apiUrl) == "string") {
-    document.querySelector("main")?.addEventListener(
+  let prevScrollTop = 0;
+    // Comprueba si el elemento con clase 'genericSec' tiene display 'block'
+  if ($genericSec.css("display") === "block" && typeof apiUrl == "string") {
+    selectMain?.addEventListener(
       "scroll",
       function () {
-        infiniteScroll(apiUrl);
+        const currentScrollTop = selectMain.scrollTop;
+
+        // Compara la posición actual con la posición anterior
+        if (currentScrollTop > prevScrollTop) {
+          infiniteScroll(apiUrl);
+        }
+
+        // Actualiza la posición anterior
+        prevScrollTop = currentScrollTop;
       },
-      false
+      {passive: false}
     );
   }
 };
-const infiniteScroll = async (apiUrl) => {
-  
-
-  let scrollTop = document.querySelector("main")?.scrollTop;
-  const scrollHeight = document.querySelector("main")?.scrollHeight;
+// Realiza el scroll infinito
+const infiniteScroll = async (apiUrl = "string") => {
+  let scrollTop = selectMain?.scrollTop;
+  const scrollHeight = selectMain?.scrollHeight;
   const clientHeight = document.documentElement.clientHeight;
 
   const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 20;
@@ -45,8 +58,8 @@ const infiniteScroll = async (apiUrl) => {
     });
     console.log(data);
     const movies = data.results;
-    
-    if (data.page === data.total_pages) {
+
+    if (data.page > data.total_pages) {
       checkDisplay();
       return;
     }
@@ -54,9 +67,11 @@ const infiniteScroll = async (apiUrl) => {
     createMoviesAlt($genericListCont, movies, false);
   }
 };
+// Opciones para el observador de intersección
 let options = {
-  root: document.querySelector("main"),
+  root: selectMain,
 };
+// Callback para el observador de intersección
 let calback = (entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
@@ -66,6 +81,7 @@ let calback = (entries) => {
   });
 };
 const lazyLoader = new IntersectionObserver(calback, options);
+// Crea elementos de películas en la lista
 function createMoviesAlt(i, j, k = true) {
   let lazyLoad = true;
   if (k) {
@@ -99,7 +115,7 @@ function createMoviesAlt(i, j, k = true) {
 $navBack.on("click", function () {
   window.history.back();
 });
-
+// Obtiene las películas tendencia
 async function getTrendMovieTop() {
   let lazyLoad = true;
   const { data } = await api("trending/movie/day");
@@ -127,6 +143,7 @@ async function getTrendMovieTop() {
   }); */
   createMoviesAlt($trendPrewMoviesCont, movies);
 }
+// Obtiene categorías de películas
 async function getCategPrew() {
   const { data } = await api("genre/movie/list?include_adult=true");
   const categories = data.genres;
@@ -147,6 +164,7 @@ async function getCategPrew() {
     $categoriesPrew.append(divElement);
   });
 }
+// Obtiene películas por categoría
 async function getMoviesByCate(i, j) {
   try {
     await api(`movie/${i}/similar`);
@@ -160,19 +178,24 @@ async function getMoviesByCate(i, j) {
   console.log(movies);
   $genericListName.text(j);
   createMoviesAlt($genericListCont, movies);
-  document.querySelector("main").scrollTop = 0;
+  selectMain.scrollTop = 0;
+  checkDisplay(`movie/${i}/similar`);
+  infiniteScroll(`movie/${i}/similar`);
 }
+// Realiza una búsqueda de películas
 async function getQuerySearch(i, j) {
   const { data } = await api(`search/movie?query=${i}`);
   const movies = data.results;
   console.log(movies);
   $genericListName.text(j);
   createMoviesAlt($genericListCont, movies);
-  document.querySelector("main").scrollTop = 0;
+  // @ts-ignore
+  selectMain.scrollTop = 0;
+  // @ts-ignore
   checkDisplay(`search/movie?query=${i}`);
   infiniteScroll(`search/movie?query=${i}`);
 }
-
+// Obtiene películas en tendencia
 async function getTrends() {
   const { data } = await api("trending/movie/day");
   const movies = data.results;
@@ -180,11 +203,11 @@ async function getTrends() {
   $genericListName.text(`Trendings day`);
   createMoviesAlt($genericListCont, movies);
 
-  document.querySelector("main").scrollTop = 0;
+  selectMain.scrollTop = 0;
   checkDisplay("trending/movie/day");
   infiniteScroll("trending/movie/day");
 }
-
+// Obtiene información de una película por su ID
 async function getMovieById(i) {
   console.log(i);
   const { data } = await api(`movie/${i}`);
@@ -219,6 +242,7 @@ async function getMovieById(i) {
   $container.append($title, $score, $description, $categoriesList);
   $movDetCont.append($container);
 }
+// Obtiene películas similares a una película por su ID
 async function getSimilar(i) {
   const { data } = await api(`movie/${i}/similar`);
   const movies = data.results;
