@@ -28,8 +28,9 @@ if (!localStorage.getItem("TOKEN") || localStorage.getItem("TOKEN") === 'null' |
   }
 }
 TOKEN = localStorage.getItem("TOKEN");
+let api
 try{
-const api = axios.create({
+  api = axios.create({
   baseURL: URL_API,
   params: { include_adult: "true", language: lang },
   headers: {
