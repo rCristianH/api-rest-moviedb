@@ -240,9 +240,10 @@ img {
 }
 .movie-container-load .movie-img-load{
   height: 250px;
+  border-radius: 24px;
   background-color: var(--gris);
   aspect-ratio: 2/3;
-  animation: loading-skeleton infinite 1s;
+  animation: loading-skeleton infinite 3s;
 }
 .trending-preview--movie-list::-webkit-scrollbar {
   background-color: var(--purpura-soft);
@@ -277,8 +278,9 @@ img {
   background-color: var(--gris);
   width: 100px;
   height: 25px;
+  border-radius: 10px;
   margin: 5px;
-  animation: loading-skeleton infinite 1s;
+  animation: loading-skeleton infinite 4s;
 }
 .category-title:before {
   content: "••••";

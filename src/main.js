@@ -1,28 +1,32 @@
 /* // @ts-ignore */
 // @ts-ignore
-let lang = localStorage.getItem("lang") ? localStorage.getItem("lang") : navigator.language;
+let lang = localStorage.getItem("lang")
+  ? localStorage.getItem("lang")
+  : navigator.language;
 let idioma = document.getElementById("lang");
 idioma.addEventListener("change", function () {
   let idiomaChange = idioma.value;
   if (idiomaChange === "sys") {
     localStorage.setItem("lang", navigator.language);
-    location.reload()
+    location.reload();
   } else if (idiomaChange === "en") {
     localStorage.setItem("lang", "en-US");
-    location.reload()
+    location.reload();
   } else {
-    localStorage.setItem("lang", "es-US")
-    location.reload()
+    localStorage.setItem("lang", "es-US");
+    location.reload();
   }
 });
-let TOKEN
-if(localStorage.getItem("TOKEN")){
-  TOKEN = localStorage.getItem("TOKEN")
-}else{
-  TOKEN = prompt("introduzca su token")
-  localStorage.setItem("TOKEN", TOKEN)
+let TOKEN;
+if (!localStorage.getItem("TOKEN") || localStorage.getItem("TOKEN") === 'null' || localStorage.getItem("TOKEN") === 'undefined') {
+  localStorage.removeItem("TOKEN");
+  localStorage.setItem("TOKEN", prompt("Introduzca su token"));
+  if (localStorage.getItem("TOKEN") === 'null') {
+    location.reload();
+  }
 }
-
+TOKEN = localStorage.getItem("TOKEN");
+try{
 const api = axios.create({
   baseURL: URL_API,
   params: { include_adult: "true", language: lang },
@@ -31,6 +35,9 @@ const api = axios.create({
     Authorization: `Bearer ${TOKEN}`,
   },
 });
+}catch(e){
+  alert("Error al cargar la API falta URl_API y URL_BASE_IMAGE");
+}
 const likedMovie = () => {
   const item = JSON.parse(localStorage.getItem("liked_movie"));
   return (movies = item ? item : {});

@@ -16,7 +16,6 @@ $navSave.click(function(){
 
 window.addEventListener("DOMContentLoaded", navigator, false);
 window.addEventListener("hashchange", navigator, false);
-
 function navigator() {
 
   location.hash.startsWith("#trends")
